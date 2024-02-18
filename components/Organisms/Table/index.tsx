@@ -34,7 +34,7 @@ const Table = <T extends Record<string, any>>({
   useEffect(() => {
     if (checkedItems.length === data.length) setIsAllChecked(true);
     else setIsAllChecked(false);
-  }, [checkedItems]);
+  }, [checkedItems, data.length]);
 
   return (
     <table className="border-collapse border-2">
