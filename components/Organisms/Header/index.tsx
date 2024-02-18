@@ -8,6 +8,8 @@ export interface HeaderProps {
 }
 
 const Header = ({ username }: HeaderProps) => {
+  if (!username) signOut();
+
   return (
     <div className="h-24 px-4 bg-dark-gray text-lighter-gray flex items-center justify-end">
       <div className="flex gap-4 items-center">

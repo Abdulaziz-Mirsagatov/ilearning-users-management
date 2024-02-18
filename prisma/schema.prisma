@@ -41,7 +41,10 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String
+  status        String
   position      String?
+  lastLogin     DateTime
+  registrationTime DateTime
   accounts      Account[]
   sessions      Session[]
 }

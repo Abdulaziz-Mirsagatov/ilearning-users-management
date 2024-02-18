@@ -18,7 +18,11 @@ export default auth((req) => {
   if (!isLoggedIn && path.startsWith(LOGOUT_PATH))
     return NextResponse.redirect(loginUrl);
   // not logged in and accessing a protected route -> redirect to login
-  if (!isLoggedIn && !path.startsWith(LOGIN_PATH))
+  if (
+    !isLoggedIn &&
+    !path.startsWith(LOGIN_PATH) &&
+    !path.startsWith("/register")
+  )
     return NextResponse.redirect(loginUrl);
 
   return NextResponse.next();

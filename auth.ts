@@ -4,6 +4,7 @@ import NextAuth from "next-auth";
 import bcrypt from "bcryptjs";
 
 import CredentialsProvider from "next-auth/providers/credentials";
+import { updateUser } from "./actions";
 
 const prisma = new PrismaClient();
 
@@ -22,26 +23,27 @@ export const {
       },
       authorize: async (credentials) => {
         // validate credentials
-        if (!credentials.email || !credentials.password) {
-          return null;
-        }
+        if (!credentials.email || !credentials.password) return null;
 
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email as string,
           },
         });
-        if (!user) {
-          return null;
-        }
+        if (!user) return null;
 
         const isValid = await bcrypt.compare(
           credentials.password as string,
           user.password
         );
-        if (!isValid) {
-          return null;
-        }
+        if (!isValid) return null;
+
+        const isBlocked = user.status === "blocked";
+        if (isBlocked) return null;
+
+        await updateUser(user.email!, {
+          lastLogin: new Date().toISOString(),
+        });
 
         return { id: user.id, name: user.name, email: user.email };
       },
@@ -54,6 +56,5 @@ export const {
   debug: process.env.NODE_ENV === "development",
   pages: {
     signIn: "/login",
-    signOut: "/logout",
   },
 });

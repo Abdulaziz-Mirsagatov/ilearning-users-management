@@ -33,6 +33,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
       email,
       position,
       password: hashedPassword,
+      status: "active",
+      lastLogin: new Date().toISOString(),
+      registrationTime: new Date().toISOString(),
     },
   });
 

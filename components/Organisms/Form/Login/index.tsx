@@ -15,6 +15,7 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
+  const [isWrongCredentials, setIsWrongCredentials] = useState<boolean>(false);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,14 +23,30 @@ const LoginForm = () => {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+    setIsWrongCredentials(false);
+  };
+
+  const handleSubmit = async () => {
+    const res = await signIn("credentials", {
+      email: form.email,
+      password: form.password,
+      redirect: false,
+    });
+    if (res?.error === null) router.replace("/users");
+    else setIsWrongCredentials(true);
   };
 
   return (
-    <form className="grid gap-4">
+    <form className="grid gap-4" onSubmit={(e) => e.preventDefault()}>
       <input
         type="email"
         name="email"
         className="input"
+        style={{
+          borderColor: isWrongCredentials ? "red" : "inherit",
+          color: isWrongCredentials ? "red" : "inherit",
+          outline: isWrongCredentials ? "red" : "inherit",
+        }}
         placeholder="email"
         value={form.email}
         onChange={handleChange}
@@ -39,6 +56,11 @@ const LoginForm = () => {
         type="password"
         name="password"
         className="input"
+        style={{
+          borderColor: isWrongCredentials ? "red" : "inherit",
+          color: isWrongCredentials ? "red" : "inherit",
+          outline: isWrongCredentials ? "red" : "inherit",
+        }}
         placeholder="password"
         value={form.password}
         onChange={handleChange}
@@ -47,15 +69,7 @@ const LoginForm = () => {
       <RegularButton
         text="Login"
         className="mt-4 text-center"
-        onClick={async (e) => {
-          e.preventDefault();
-          await signIn("credentials", {
-            email: form.email,
-            password: form.password,
-            redirect: false,
-          });
-          router.replace("/users");
-        }}
+        onClick={handleSubmit}
       />
     </form>
   );
