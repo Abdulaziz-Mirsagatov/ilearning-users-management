@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "./auth";
 
-const LOGIN_PATH = "/api/auth/signin";
+const LOGIN_PATH = "/login";
 const LOGOUT_PATH = "/api/auth/signout";
 
 export default auth((req) => {
@@ -13,12 +13,12 @@ export default auth((req) => {
 
   // logged in and accessing login route -> redirect to origin
   if (isLoggedIn && path.startsWith(LOGIN_PATH))
-    return NextResponse.redirect(origin);
+    return NextResponse.redirect(`${origin}/users`);
   // logged in and accessing logout route -> redirect to login
   if (!isLoggedIn && path.startsWith(LOGOUT_PATH))
     return NextResponse.redirect(loginUrl);
   // not logged in and accessing a protected route -> redirect to login
-  if (!isLoggedIn && !path.startsWith("/api/auth"))
+  if (!isLoggedIn && !path.startsWith(LOGIN_PATH))
     return NextResponse.redirect(loginUrl);
 
   return NextResponse.next();
