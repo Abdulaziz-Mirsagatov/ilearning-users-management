@@ -2,6 +2,8 @@ import UsersForm from "@/components/Organisms/Form/Users";
 import { TableHeader } from "@/components/Organisms/Table";
 import { getUsers } from "@/services/users";
 
+export const dynamic = "force-dynamic";
+
 const UsersPage = async () => {
   const users = await getUsers();
 
