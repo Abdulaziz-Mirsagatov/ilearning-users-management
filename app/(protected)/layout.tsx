@@ -2,6 +2,8 @@ import { auth } from "@/auth";
 import Header from "@/components/Organisms/Header";
 import { getUser } from "@/services/users";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
   children,
 }: Readonly<{
