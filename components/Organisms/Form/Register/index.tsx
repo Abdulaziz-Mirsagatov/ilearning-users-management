@@ -40,8 +40,8 @@ const RegisterForm = () => {
       return;
     }
     const res = await registerUser(form);
-    if (res.ok) router.replace("/login");
-    else setUserExists(true);
+    if (res.error) setUserExists(true);
+    else router.replace("/login");
   };
 
   return (
