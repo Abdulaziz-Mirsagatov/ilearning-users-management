@@ -1,7 +1,7 @@
 "use server";
 
 import { RegisterFormData } from "@/components/Organisms/Form/Register";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 export const registerUser = async (form: RegisterFormData) => {
   const res = await fetch(`${process.env.API_URL}/api/register`, {
@@ -11,7 +11,6 @@ export const registerUser = async (form: RegisterFormData) => {
   if (!res.ok) throw new Error(res.statusText);
 
   revalidateTag("users");
-  revalidatePath("/users");
   return res.json();
 };
 
@@ -32,7 +31,6 @@ export const updateUser = async (email: string, user: UserPartial) => {
   if (!res.ok) throw new Error(res.statusText);
 
   revalidateTag("users");
-  revalidatePath("/users");
   return res.json();
 };
 
@@ -43,6 +41,5 @@ export const deleteUser = async (email: string) => {
   if (!res.ok) throw new Error(res.statusText);
 
   revalidateTag("users");
-  revalidatePath("/users");
   return res.json();
 };
