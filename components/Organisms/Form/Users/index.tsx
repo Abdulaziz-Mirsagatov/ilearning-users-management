@@ -6,23 +6,28 @@ import Table, { TableHeader } from "../../Table";
 import { User } from "@/types";
 import { useState } from "react";
 import { deleteUser, updateUser } from "@/actions";
+import { signOut } from "next-auth/react";
 
 export interface UsersFormProps {
   data: User[];
   headers: TableHeader[];
+  email: string;
 }
 
-const UsersForm = ({ data, headers }: UsersFormProps) => {
+const UsersForm = ({ data, headers, email }: UsersFormProps) => {
   const [checkedUsers, setCheckedUsers] = useState<User[]>([]);
 
   const blockCheckedUsers = async () => {
-    const blockedUsersPromises = checkedUsers.map((user) =>
-      updateUser(user.email, { status: "blocked" })
-    );
+    let out = false;
+    const blockedUsersPromises = checkedUsers.map((user) => {
+      if (user.email === email) out = true;
+      return updateUser(user.email, { status: "blocked" });
+    });
 
     Promise.all(blockedUsersPromises).then(() => {
       setCheckedUsers([]);
     });
+    if (out) signOut();
   };
   const unblockCheckedUsers = async () => {
     const unblockedUsersPromises = checkedUsers.map((user) =>

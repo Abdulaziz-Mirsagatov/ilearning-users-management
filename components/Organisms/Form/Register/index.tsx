@@ -21,6 +21,8 @@ const RegisterForm = () => {
     password: "",
     confirmPassword: "",
   });
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [userExists, setUserExists] = useState(false);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,10 +30,22 @@ const RegisterForm = () => {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+    setPasswordsMatch(true);
+    setUserExists(false);
+  };
+
+  const handleRegister = async () => {
+    if (form.password !== form.confirmPassword) {
+      setPasswordsMatch(false);
+      return;
+    }
+    const res = await registerUser(form);
+    if (res.ok) router.replace("/login");
+    else setUserExists(true);
   };
 
   return (
-    <form className="grid gap-4">
+    <form className="grid gap-4" onClick={(e) => e.preventDefault()}>
       <input
         type="text"
         name="name"
@@ -63,27 +77,44 @@ const RegisterForm = () => {
         name="password"
         className="input"
         placeholder="password"
+        style={{
+          borderColor: !passwordsMatch ? "red" : "inherit",
+          color: !passwordsMatch ? "red" : "inherit",
+          outline: !passwordsMatch ? "red" : "inherit",
+        }}
         required
         value={form.password}
         onChange={handleChange}
       />
-      <input
-        type="password"
-        name="confirmPassword"
-        className="input"
-        placeholder="confirm password"
-        required
-        value={form.confirmPassword}
-        onChange={handleChange}
-      />
+      <div className="relative">
+        <input
+          type="password"
+          name="confirmPassword"
+          className="input"
+          placeholder="confirm password"
+          style={{
+            borderColor: !passwordsMatch ? "red" : "inherit",
+            color: !passwordsMatch ? "red" : "inherit",
+            outline: !passwordsMatch ? "red" : "inherit",
+          }}
+          required
+          value={form.confirmPassword}
+          onChange={handleChange}
+        />
+        {(!passwordsMatch || userExists) && (
+          <p className="absolute -b-4 left-1/2 -translate-x-1/2 text-ruby text-center">
+            {!passwordsMatch
+              ? "Missmatch"
+              : userExists
+              ? "User exists, please login"
+              : ""}
+          </p>
+        )}
+      </div>
       <RegularButton
         text="Register"
         className="mt-4 text-center"
-        onClick={async (e) => {
-          e.preventDefault();
-          const res = await registerUser(form);
-          if (res) router.replace("/login");
-        }}
+        onClick={handleRegister}
       />
     </form>
   );

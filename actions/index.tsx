@@ -8,7 +8,6 @@ export const registerUser = async (form: RegisterFormData) => {
     method: "POST",
     body: JSON.stringify(form),
   });
-  if (!res.ok) throw new Error(res.statusText);
 
   revalidateTag("users");
   return res.json();

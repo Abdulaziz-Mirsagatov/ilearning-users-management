@@ -1,24 +1,18 @@
-import UsersForm from "@/components/Organisms/Form/Users";
-import { TableHeader } from "@/components/Organisms/Table";
-import { getUsers } from "@/services/users";
+import FormContainer from "@/components/Organisms/Container/Form";
+import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
-const UsersPage = async () => {
-  const users = await getUsers();
-
-  const headers: TableHeader[] = [
-    { key: "name", label: "Name" },
-    { key: "email", label: "Email" },
-    { key: "position", label: "Position" },
-    { key: "status", label: "Status" },
-    { key: "lastLogin", label: "Last Logged In At" },
-    { key: "registrationTime", label: "Registered At" },
-  ];
-
+const UsersPage = () => {
   return (
     <div className="grid h-full">
-      <UsersForm data={users} headers={headers} />
+      <Suspense
+        fallback={
+          <p className="text-xl text-medium-gray text-center">Loading...</p>
+        }
+      >
+        <FormContainer />
+      </Suspense>
     </div>
   );
 };
